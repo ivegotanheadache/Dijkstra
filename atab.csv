@@ -1,0 +1,8 @@
+NodeID,Cost,Previus
+A,0,A
+B,3,A
+C,255,null
+D,255,null
+E,255,null
+F,255,null
+G,8,A
