@@ -1,12 +1,14 @@
 import pandas as pd
-
-
+#-GESTIONE DELLE ECCEZIONI
+#-IMPLEMENTAZIONE PER SCOPRIRE AUTOMATICAMENTE I NEIGHBORS
+#-IMPLEMENTAZIONE REALISTICA DEL FUNZIONAMENTO DEL PROTOCOLLO OSFP CON i DR BDR E DROTHERS
+#-RISOLVERE MAPPATURA CON I NEIGHBOR
 class Graph():
     def __init__(self, verteces = []):
         self.verteces = verteces
     
-    def next(self, startingPoint): #iterating over nodes 
-        for index in startingPoint.verteces:
+    def discoverPaths(self, startingPoint): #iterating over nodes 
+        for index in self.verteces:
             for neighbor in index.neighbors:
 
                 z=startingPoint.routeTable.at[(index.id), "Cost"]
@@ -19,17 +21,17 @@ class Graph():
                     startingPoint.routeTable.at[(neighbor.id), "Cost"] = sumCost
                     neighbor.routeTable.at[(startingPoint.id), "Cost"] = sumCost
                 
-class Vertex(Graph):
+class Vertex():
     '''
     define one single vertex of the map
     '''
 
-    def __init__(self, name, id, file):
+    def __init__(self, name, id, file,): #(... , graph)
         '''
         in a network, id in four-dotted format
         in a network, neighbors are discovered via arp -> implement api
         '''
-        super().__init__()
+        #self.obj_graph = Graph(graph)
         self.name = name
         self.id = id
         self.routeTable = pd.read_csv(file)
@@ -37,11 +39,13 @@ class Vertex(Graph):
         '''if the cost is not 0 it is not the starting point itself, and if isn't 255
         the node is not  directly connected and it is not the starting point itself'''
     
-        self.neighbors = [
-            globals()[self.routeTable.at[x, "NodeID"]]
-            for x in range(self.routeTable.shape[0])
-            if self.routeTable.at[x, "Cost"] not in (0, 255)
-        ]
+        
+        def gen():
+            for x in range(self.routeTable.shape[0]):
+                if self.routeTable.at[x, "Cost"] not in (0, 255):
+                    yield globals()[self.routeTable.at[x, "NodeID"]]
+        
+        self.neighbors  = gen()
 
         '''
         for bugging reason is useful to sort the neighbors in crecent mode to 
@@ -53,8 +57,8 @@ class Vertex(Graph):
     #def __lt__(self, other): #used to sort the neighbors 
     #   return self.id < other.id
     
-'''                    
-grafo = Graph([A,B,C,D,E,F,G])           
+                  
+        
 A = Vertex("A", 0, "atab.csv")
 B = Vertex("B", 1, "btab.csv")
 C = Vertex("C" ,2, "ctab.csv")
@@ -63,8 +67,6 @@ E = Vertex("E", 4, "etab.csv")
 F = Vertex("F", 5,"ftab.csv")
 G = Vertex("G", 6, "gtab.csv")
 
-
-B.next([A,B,C,D,E,F,G])
-print(B.routeTable)
-'''
-
+grafo = Graph([A,B,C,D,E,F,G]) 
+grafo.discoverPaths(C)
+print(C.routeTable)
