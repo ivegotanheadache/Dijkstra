@@ -47,7 +47,7 @@ class Vertex():
         self.neighbors  = gen()
 
         '''
-        for bugging reason is useful to sort the neighbors in crecent mode to 
+        for bugging reason is useful to sort the neighbors in crescent mode to 
         iterate the graph. In this case this step is omitted because already sorted,
         but must be done everytime  
 
