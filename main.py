@@ -29,7 +29,6 @@ class Vertex():
     def __init__(self, name, id, file,): #(... , graph)
         '''
         in a network, id in four-dotted format
-        in a network, neighbors are discovered via arp -> implement api
         '''
         #self.obj_graph = Graph(graph)
         self.name = name
